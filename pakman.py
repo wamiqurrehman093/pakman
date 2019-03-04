@@ -17,7 +17,7 @@ SPEED = 8
 
 ENEMY_TOTAL = 5
 ENEMY_SCALE = 0.3
-ENEMY_SPEED = 5
+ENEMY_SPEED = 4
 
 LEFT = arcade.key.LEFT
 RIGHT = arcade.key.RIGHT
@@ -57,8 +57,7 @@ class Enemy(arcade.Sprite):
         if self.center_y > HEIGHT - PACMAN_SIZE:
             self.center_y = HEIGHT - PACMAN_SIZE
 
-
-        if random.randrange(25) == 0:
+        if random.randrange(50) == 0:
             start_x = self.center_x
             start_y = self.center_y
 
@@ -114,6 +113,8 @@ class Window(arcade.Window):
             self.player.change_y = -SPEED
 
     def update(self, delta_time):
+        if self.gameover:
+            arcade.window_commands.close_window()
         self.player.update()
 
         for enemy in self.enemy_list:
