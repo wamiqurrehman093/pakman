@@ -11,12 +11,13 @@ WHITE = arcade.color.WHITE
 BLACK = arcade.color.BLACK
 BLUE = arcade.color.ALICE_BLUE
 
-ENTITY_SCALE = 0.3
-SPEED = 5
+ENTITY_SCALE = 0.4
+PACMAN_SIZE = 20
+SPEED = 8
 
 ENEMY_TOTAL = 5
 ENEMY_SCALE = 0.3
-ENEMY_SPEED = 3
+ENEMY_SPEED = 5
 
 LEFT = arcade.key.LEFT
 RIGHT = arcade.key.RIGHT
@@ -26,10 +27,36 @@ DOWN = arcade.key.DOWN
 TOTAL_COINS = 100
 SCALE_COIN = 0.15
 
+class Pakman(arcade.Sprite):
+    def update(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+
+        if self.center_x < PACMAN_SIZE:
+            self.center_x = PACMAN_SIZE
+        if self.center_x > WIDTH - PACMAN_SIZE:
+            self.center_x = WIDTH - PACMAN_SIZE
+
+        if self.center_y < PACMAN_SIZE:
+            self.center_y = PACMAN_SIZE
+        if self.center_y > HEIGHT - PACMAN_SIZE:
+            self.center_y = HEIGHT - PACMAN_SIZE
+
 class Enemy(arcade.Sprite):
     def follow(self, player):
         self.center_x += self.change_x
         self.center_y += self.change_y
+
+        if self.center_x < PACMAN_SIZE:
+            self.center_x = PACMAN_SIZE
+        if self.center_x > WIDTH - PACMAN_SIZE:
+            self.center_x = WIDTH - PACMAN_SIZE
+
+        if self.center_y < PACMAN_SIZE:
+            self.center_y = PACMAN_SIZE
+        if self.center_y > HEIGHT - PACMAN_SIZE:
+            self.center_y = HEIGHT - PACMAN_SIZE
+
 
         if random.randrange(25) == 0:
             start_x = self.center_x
@@ -57,7 +84,6 @@ class Window(arcade.Window):
         self.coin_list = None
         self.enemy_list = None
         self.player = None
-        self.physics_engine = None
         self.score = None
 
     def draw_hud(self):
@@ -88,8 +114,7 @@ class Window(arcade.Window):
             self.player.change_y = -SPEED
 
     def update(self, delta_time):
-        self.player.center_x += self.player.change_x
-        self.player.center_y += self.player.change_y
+        self.player.update()
 
         for enemy in self.enemy_list:
             enemy.follow(self.player)
@@ -112,12 +137,12 @@ class Window(arcade.Window):
         self.score = 0
         self.gameover = False
 
-        self.player = arcade.Sprite('assets/images/pakman.png', ENTITY_SCALE)
+        self.player = Pakman('assets/images/pakman.png', ENTITY_SCALE)
         self.player.center_x = 100
         self.player.center_y = 100
 
         for i in range(ENEMY_TOTAL):
-            enemy = Enemy('assets/images/enemy.png', ENTITY_SCALE)
+            enemy = Enemy('assets/images/'+ str(i) +'.png', ENTITY_SCALE)
             enemy.center_x = random.randrange(50, WIDTH - 50)
             enemy.center_y = random.randrange(50, HEIGHT- 50)
             self.enemy_list.append(enemy)
